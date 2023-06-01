@@ -1,0 +1,33 @@
+@import './globals.css';
+.Container{
+  background-color:pink;
+  width: 100vw;
+  height: 100vh;
+}
+
+
+#components-layout-demo-responsive .logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+
+.flex-center{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-item-center {
+  display: flex;
+  align-items: center;
+}
+
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+

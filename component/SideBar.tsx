@@ -3,24 +3,16 @@ import React from 'react';
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
 
-import SideBar from '../component/SideBar';
-
 const { Header, Content, Footer, Sider } = Layout;
-
-const App: React.FC = () => {
-
+function SideBar() {
   return (
     <>
-    <div>
-       {/* <Link href="component/login">
-        登陆
-       </Link> */}
-       <Link href="/blog/?id=1">
-        博客
-       </Link>
-    </div>
+    <Link  href="/component/login">
+      <Button>登陆</Button>
+      </Link>
     </>
-    )
-};
+    
+  )
+}
 
-export default App;
+export default SideBar
