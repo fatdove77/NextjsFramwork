@@ -3,7 +3,6 @@ import React from 'react';
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
 
-import SideBar from '../component/SideBar';
 
 const { Header, Content, Footer, Sider } = Layout;
 
