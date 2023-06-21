@@ -20,7 +20,7 @@ function Header() {
   const router = useRouter();
   const onClick = (e) => {
     console.log('click ', e);
-    router.push(e.key);
+    router.push(`/${e.key}`);
     setCurrent(e.key);
   };
   return (
