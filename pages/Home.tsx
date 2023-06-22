@@ -7,7 +7,10 @@ const Home: React.FC = () => {
     <div>
       home
       <Link href={`/Blog`}>路由跳转</Link>
-      测试状态管理工具{count}
+      <div>
+        unstate-next传参：{count}
+      </div>
+     
     </div>
   )
 }
