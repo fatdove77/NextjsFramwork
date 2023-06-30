@@ -1,4 +1,3 @@
-import { Chain } from 'wagmi/chains';
 export const NETWORK = {
   name:'Fibo Chain',
   chainId: '0x3012',  // 1230  //12306 //十六进制 3012
