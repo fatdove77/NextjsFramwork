@@ -3,9 +3,11 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Head from 'next/head'
 import useWeb3Hook from '@/store/Web3Provider'
+import useStorage from '@/store/Web3Provider/storage'
 
 // Pay attention to the sorting,
 const models = {
+  useStorage,
   useWeb3Hook,
 };
 
