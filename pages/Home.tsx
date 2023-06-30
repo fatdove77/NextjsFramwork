@@ -1,8 +1,11 @@
 import React from 'react'
 import Link from "next/link";
 import useWeb3Hook from '@/store/Web3Provider'
+import useStorage from '@/store/Web3Provider/storage'
 const Home: React.FC = () => {
-  let {count} = useWeb3Hook.useContainer();
+  let {count,add} = useWeb3Hook.useContainer();
+  let {setNetworkId} = useStorage.useContainer();
+  setNetworkId(111);
   return (
     <div>
       home
@@ -10,7 +13,10 @@ const Home: React.FC = () => {
       <div>
         unstate-next传参：{count}
       </div>
-     
+      <div>
+        <button onClick={()=>{add()}}>+1</button>
+      </div>
+       
     </div>
   )
 }

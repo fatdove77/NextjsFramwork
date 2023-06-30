@@ -24,6 +24,7 @@
     "ethers": "^6.6.0",
     "eventemitter3": "^5.0.1",
     "install": "^0.13.0",
+    "js-cookie": "^3.0.5",
     "next": "13.3.0",
     "npm": "^9.7.1",
     "postcss": "8.4.21",
@@ -36,5 +37,8 @@
     "viem": "^1.0.7",
     "wagmi": "^1.2.0",
     "web3": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.3"
   }
 }
