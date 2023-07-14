@@ -6,7 +6,6 @@ import config from '@/config'
 import Cookies from 'js-cookie'
 const STORAGE_PREFIX = 'WEB_';  //加一个头部描述信息
 
-
 //如果value不存在那么存入缓存，如果value存在那么取出key值对应的value
 export function storage(key: string, value?: any) {
   //传入value

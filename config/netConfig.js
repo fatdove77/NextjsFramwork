@@ -1,9 +1,10 @@
 export const chains = [
+  //fibo正式链
   {
     name:'Fibo Chain',
     chainId: 12306,  // 1230  //12306 //十六进制 3012
     chainName: 'FIBO',
-    rpcUrls: ['https://node.fibochain.org'],
+    rpcUrls: ['https://node1.fibo-rpc.asia/'],
     faucets: ["https://www.fibochain.org/drawdex"],
     explorers: [],
     infoURL: "https://www.fibochain.org/",
@@ -14,7 +15,30 @@ export const chains = [
       symbol: 'FIBO',
       decimals: 18,
       }
-  
+  },
+  //okc的测试链
+  {
+    "name": "OEC Testnet",
+    "chainId": 65,
+    "shortName": "tokt",
+    "chain": "okexchain",
+    "network": "testnet",
+    "networkId": 65,
+    "nativeCurrency": {
+      "name": "OEC Global Utility Token in testnet",
+      "symbol": "OKT",
+      "decimals": 18
+    },
+    "rpc": ["https://exchaintestrpc.okex.org"],
+    "faucets": ["https://www.okex.com/drawdex"],
+    "explorers": [
+      {
+        "name": "OKLink",
+        "url": "https://www.oklink.com/okexchain-test",
+        "standard": "EIP3091"
+      }
+    ],
+    "infoURL": "https://www.okex.com/okexchain"
   }
 ]
 

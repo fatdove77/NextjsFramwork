@@ -5,6 +5,8 @@ import '@/styles/style.scss'
 import '@rainbow-me/rainbowkit/styles.css'
 // //组件
 import Layout from '@/component/Layout'
+//toast
+import toast, { Toaster } from 'react-hot-toast';
 
 
 interface appProps {
@@ -16,6 +18,7 @@ export default function App({ Component, pageProps }: appProps) {
   return (
     <>
       <Layout>
+        <Toaster></Toaster>
         <Component {...pageProps} />
       </Layout>
     </>
