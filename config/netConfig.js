@@ -39,7 +39,23 @@ export const chains = [
       }
     ],
     "infoURL": "https://www.okex.com/okexchain"
-  }
+  },
+  {
+    name:'Fibo Test Chain',
+    chainId: 12307,  
+    chainName: 'FIBO Test',
+    rpcUrls: ['https://testnet.fibochain.org'],
+    faucets: ["https://www.fibochain.org/drawdex"],
+    explorers: [],
+    infoURL: "https://www.fibochain.org/",
+    network: "fibochain",
+    networkId: 12307,  //12306
+    nativeCurrency: {
+      name: 'fibo',
+      symbol: 'FIBO',
+      decimals: 18,
+      }
+  },
 ]
 
 

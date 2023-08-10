@@ -12,9 +12,13 @@ export function storage(key: string, value?: any) {
   if (value !== undefined) {
     // localStorage.storePermanentItem(STORAGE_PREFIX + key, value);
     Cookies.set(STORAGE_PREFIX + key, value)
+    localStorage.setItem(STORAGE_PREFIX + key, value);
     return;
   }
-  return Cookies.get(STORAGE_PREFIX + key);
+  if(typeof window !=='undefined'){
+    return localStorage.getItem(STORAGE_PREFIX + key);
+  }
+  
 }
 
 

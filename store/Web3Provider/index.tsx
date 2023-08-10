@@ -13,20 +13,18 @@ import toast, { Toaster } from 'react-hot-toast';
 import detectEthereumProvider from '@metamask/detect-provider';
 //ETHERS
 import { ethers } from 'ethers';
-export interface IWeb3ProviderProps {
-  count: number;
+export interface useWeb3Type {
   provider: any;  //ethers的配置类 包含很多方法
   web3: any;  //web3 
   account: string;
   active: boolean;
   chainId: number;
+  loading: boolean;
   connect: (chainId: number, wallerType: string) => any;
   disconnect: () => void;
-  loading: boolean;
 }
 
-const useWeb3Hook = (): IWeb3ProviderProps => {
-  const [count, setCounter] = useState<number>(1);
+const useWeb3Hook = (): useWeb3Type => {
   const [web3, setWeb3] = useState<any>(null); // ethereum  //window.ethereum
   const [provider, setProvider] = useState<any>(null); // provider
   const [currentAccount, setCurrentAccount] = useState<any>(null);
@@ -130,7 +128,7 @@ const useWeb3Hook = (): IWeb3ProviderProps => {
             }
           }
         }
-        const provider = new ethers.BrowserProvider(providerInstance); // 实例化provider
+        const provider = new ethers.providers.Web3Provider(providerInstance); // 实例化provider
         const user_Account = await provider._getAddress(account); // 
 
         // Set
@@ -209,12 +207,11 @@ const useWeb3Hook = (): IWeb3ProviderProps => {
   }, [web3, currentAccount, handleDisconnect, setNetworkId]);
 
   return {
-    count,
-    provider,
-    web3,
-    chainId,
-    account: currentAccount,
-    active: !!currentAccount,
+    provider,  
+    web3, 
+    chainId,  //链id
+    account: currentAccount,  //用户地址
+    active: !!currentAccount,  //是否连接
     async connect(chain_id: number, wallet_type: string) {
       return await handleConnect(chain_id, wallet_type);
     },
