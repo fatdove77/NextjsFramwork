@@ -96,7 +96,10 @@ export const setObjBigNumber = (
 //    readonly [key: string]: any;f
 // }
 type dataType = Record<string, any>;
+
 export type MethodArg = dataType | string | number | BigNumber;
+
+//定义合约返回值的数据类型  返回值 加载状态 错误
 export interface CallState {
   readonly value: any; // MethodArg | undefined;
   // true if the result has never been fetched
@@ -106,18 +109,23 @@ export interface CallState {
   [key: string]: any;
 }
 
+//合约返回错误  返回下列的非法value
 const INVALID_CALL_STATE: CallState = {
   value: undefined,
   loading: false,
   error: false,
 };
+
+
 // satte
 export function toCallState(
   value: MethodArg | undefined = undefined,
   methodName?: string,
 ): CallState {
+  //值不存在  返回定义好的非法state
   if (!value) return INVALID_CALL_STATE;
 
+    
   const obj_data = Object.entries(value)
     .map((item) => item[1])
     .some((item) => (item ?? '') !== ''); 

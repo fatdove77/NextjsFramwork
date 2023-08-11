@@ -1,9 +1,14 @@
 //用于存放合约调用相关方法
 import { type Contract, ethers } from 'ethers';  //导入合约type
 import { useMemo, useEffect, useState } from 'react';
+//钱包基本信息
 import Web3Provider, { type useWeb3Type } from '@/store/Web3Provider';
+//定义的type
+import { toCallState, type MethodArg } from './utils';
+//工具类
 import { formatHash, getEtherscanLink, isAddress } from './utils';
 import toast from 'react-hot-toast';
+import { message, notification } from 'antd';
 
 
 //create contract instance  
@@ -46,6 +51,7 @@ export function useSingleCallResult(
 ): any {
   const { account } = Web3Provider.useContainer();
   const [data, setData] = useState<MethodArg | undefined>(undefined);
+  //检查合约是否有输入的函数方法 checking wether the contract has inputted method 
   const fragment = useMemo(
     () => contract?.interface?.getFunction(methodName.trim()),
     [contract, methodName],
@@ -63,3 +69,47 @@ export function useSingleCallResult(
     return toCallState(data, methodName);
   }, [data]);
 }
+
+
+
+
+//调用之后浏览器查看的提示
+// message
+export const useMessage = () => {
+  const { provider, chainId } = Web3Provider.useContainer();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // message
+  const Message = (
+    hash: string,
+    fn?: () => any,
+    successText: string = '链上已确认',
+  ) => {
+    message.loading('链上确认中...', 0);
+    setLoading(true);
+    try {
+      provider?.waitForTransaction(hash).then(() => {
+        fn?.();
+        message.destroy();
+        setLoading(false);
+        // message.success(successText, 1000);
+        notification.success({
+          placement: 'topRight',
+          message: successText,
+          description: `View on fiboscan:${formatHash(hash)}`,
+          onClick: () => {
+            window.open(
+              getEtherscanLink(chainId, hash, 'transaction'),
+              '_blank',
+            );
+          },
+        });
+      });
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  return useMemo(() => {
+    return { Message, loading };
+  }, [loading]);
+};
