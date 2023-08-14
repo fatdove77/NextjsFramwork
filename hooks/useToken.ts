@@ -5,10 +5,7 @@ import { toCallState, type CallState } from './utils';
 import Web3Provider from '@/store/Web3Provider';
 import { BigNumber } from 'bignumber.js';
 
-
-
-
-// currency balance  通过合约获取当前代币
+// currency balance  通过合约获取当前代币余额
 export const useCurrencyBalances = (tokenAddress?: string): CallState => {
   const { account } = Web3Provider.useContainer();
 
@@ -30,30 +27,8 @@ export const useCurrencyBalances = (tokenAddress?: string): CallState => {
   }, [decimals, balanceOf, tokenAddress]);
 };
 
-// TODO:   封装代币信息
-export function useToken(tokenAddress?: string): CallState {
-  const TokenContract = useTokenContract(tokenAddress);
-  const { symbol } = useSingleCallResult(TokenContract, 'symbol');
-  const { decimals } = useSingleCallResult(TokenContract, 'decimals');
-  const { name } = useSingleCallResult(TokenContract, 'name');
-
-  // const address = useSingleCallResult(TokenContract, 'address');
-
-  return useMemo(() => {
-    const data = {
-      symbol,
-      decimals,
-      name,
-      address: tokenAddress,
-    };
-    return toCallState(data);
-  }, [symbol, decimals, name]);
-}
-
-
-
 // Mainnet balance  获取主网币 （fibo okx）
-export const useETHBalances = (): CallState => {
+export const useMainNetBalances = (): CallState => {
   const { account, provider } = Web3Provider.useContainer();
   const [pending, setPending] = useState();
 
@@ -77,6 +52,28 @@ export const useETHBalances = (): CallState => {
     return toCallState(data);
   }, [pending]);
 };
+
+
+
+// TODO:   封装代币信息
+export function useToken(tokenAddress?: string): CallState {
+  const TokenContract = useTokenContract(tokenAddress);
+  const { symbol } = useSingleCallResult(TokenContract, 'symbol');
+  const { decimals } = useSingleCallResult(TokenContract, 'decimals');
+  const { name } = useSingleCallResult(TokenContract, 'name');
+
+  // const address = useSingleCallResult(TokenContract, 'address');
+
+  return useMemo(() => {
+    const data = {
+      symbol,
+      decimals,
+      name,
+      address: tokenAddress,
+    };
+    return toCallState(data);
+  }, [symbol, decimals, name]);
+}
 
 
 

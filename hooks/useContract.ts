@@ -18,6 +18,24 @@ export const useMultiFactory = ()=>{
 }
 
 
+// erc20 实例化erc20合约  这个函数其实是能接受传参的 只不过传参进入闭包里 address
+export const useErcContract = () => {
+  const { provider, account } = Web3Provider.useContainer();
+  return (address: string) => {
+    if (!address || !provider || !account) return null;
+    return getContract(address, ERC20_ABI, provider, account);
+  };
+};
+
+// TODO: erc20  二次实例化代币合约(给代币合约传参)
+export function useTokenContract(
+  tokenAddress?: string,
+  withSignerIfPossible?: boolean,
+): Contract | null {
+  return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible);
+}
+
+
 
 // TODO: 
 export function useContract(
@@ -41,23 +59,6 @@ export function useContract(
       return null;
     }
   }, [address, ABI, provider, withSignerIfPossible, account]);
-}
-
-// erc20 实例化erc20合约
-export const useErcContract = () => {
-  const { provider, account } = Web3Provider.useContainer();
-  return (address: string) => {
-    if (!address || !provider || !account) return null;
-    return getContract(address, ERC20_ABI, provider, account);
-  };
-};
-
-// TODO: erc20  实例化代币合约
-export function useTokenContract(
-  tokenAddress?: string,
-  withSignerIfPossible?: boolean,
-): Contract | null {
-  return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible);
 }
 
 // // Aww
