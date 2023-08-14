@@ -116,8 +116,8 @@ const INVALID_CALL_STATE: CallState = {
   error: false,
 };
 
-
-// satte
+ 
+// satte  //返回的是一个对象  包含value loading error
 export function toCallState(
   value: MethodArg | undefined = undefined,
   methodName?: string,

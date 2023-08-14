@@ -1,19 +1,3 @@
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-
-
-
-
-
 dapp主要解决两个问题
 
 1. 框架next 搭配ts https://juejin.cn/post/7021674818621669389
@@ -679,21 +663,359 @@ export default createContainer(useWeb3Hook);
 
 # 封装合约调用
 
-1. 封装合约调用的hooks
+1. ## 封装合约调用的hooks  ./index
 
-2. 封装实例化合约的hooks
+   ```ts
+   // single call result   //调用合约方法 需要传入 
+   export function useSingleCallResult(
+     contract: Contract | null | undefined,  //合约实例
+     methodName: string,   //合约方法
+     inputs?: MethodArg[],  //参数  //代表数据类型为MethoodArg的数组
+   ): any {
+     const { account } = Web3Provider.useContainer();
+     const [data, setData] = useState<MethodArg | undefined>(undefined);
+     //检查合约是否有输入的函数方法 checking wether the contract has inputted method 
+     const fragment = useMemo(
+       () => contract?.interface?.getFunction(methodName.trim()),
+       [contract, methodName],
+     );
+   
+     useEffect(() => {
+       (async () => {
+         if (!fragment) return;
+           ////由于方法名是一个字符串，而你想要访问的是 contract 对象中的一个属性（即合约方法），你可以使用方括号记法来实现。
+         const res = await contract?.[methodName.trim()](...(inputs ?? []));
+         setData(res);
+       })();
+     }, [contract?.address, account]); // , fragment
+   
+     return useMemo(() => {
+       return toCallState(data, methodName);
+     }, [data]);
+   }
+   ```
 
-3. 封装读写合约的hooks （signer or provider）
+   
 
-4. 调用合约的提示
+2. ## 封装实例化合约的hooks  ./index
+
+   ```ts
+   //create contract instance  
+   export function getContract(
+     address: string, //contract address 
+     ABI: any,
+     library: any,  //provider 
+     account?: string,  //alternative account for choosing write and read-only
+   ): Contract {
+     const AddressZero: string = '0x0000000000000000000000000000000000000000';
+     //检验合约地址
+     if (!isAddress(address, true) || address === AddressZero) {
+       toast.error(`Invalid 'address' parameter '${address}'.`);
+     }  
+   
+     return new ethers.Contract(
+       address,
+       ABI,
+       getProviderOrSigner(library, account),  //如果有acount那么生成signer代表可以write的合约//否则readonly合约
+     );
+   }
+   
+   // Provider/Signer  如果传入account那么生成signer 否则返回provider
+   export function getProviderOrSigner(library: any, account?: string): any {
+     return account ? getSigner(library, account) : library;
+   }
+   
+   // getUncheckedSigner。  由provide+account生成signer
+   export function getSigner(library: any, account: string): any {
+     return library.getSigner(account).connectUnchecked();
+   }
+   
+   ```
+
+3. ## 封装调用合约实例化的函数（用于传参->实例化合约）  ./useContract
+
+   ```ts
+   //实例化多签工厂合约
+   export const useMultiFactory = ()=>{
+     const {provider,account} = Web3Provider.useContainer();
+     if(!provider || !MultiFactory_ABI) return;
+     return getContract(contractAddress,MultiFactory_ABI,provider,account);
+   }
+   
+   ```
+
+4. ## 调用合约的提示  ./index
+
+   ```ts
+   // message
+   export const useMessage = () => {
+     const { provider, chainId } = Web3Provider.useContainer();
+     const [loading, setLoading] = useState<boolean>(false);
+   
+     // message
+     const Message = (
+       hash: string,
+       fn?: () => any,
+       successText: string = '链上已确认',
+     ) => {
+       message.loading('链上确认中...', 0);
+       setLoading(true);
+       try {
+         provider?.waitForTransaction(hash).then(() => {
+           fn?.();
+           message.destroy();
+           setLoading(false);
+           // message.success(successText, 1000);
+           notification.success({
+             placement: 'topRight',
+             message: successText,
+             description: `View on fiboscan:${formatHash(hash)}`,
+             onClick: () => {
+               window.open(
+                 getEtherscanLink(chainId, hash, 'transaction'),
+                 '_blank',
+               );
+             },
+           });
+         });
+       } catch (error) {
+         setLoading(false);
+       }
+     };
+     return useMemo(() => {
+       return { Message, loading };
+     }, [loading]);
+   };
+   ```
+
+   
+
+5. ## 封装数据类型  ./utils
+
+   ```ts
+   type dataType = Record<string, any>;
+   export type MethodArg = dataType | string | number | BigNumber;
+   //定义合约返回值的数据类型  返回值 加载状态 错误
+   export interface CallState {
+     readonly value: any; // MethodArg | undefined;
+     // true if the result has never been fetched
+     readonly loading: boolean;
+     // true if the call was made and is synced, but the return data is invalid
+     readonly error: boolean;
+     [key: string]: any;
+   }
+   
+   const INVALID_CALL_STATE: CallState = {
+     value: undefined,
+     loading: false,
+     error: false,
+   };
+   
+   
+   
+   export function toCallState(
+     value: MethodArg | undefined = undefined,
+     methodName?: string,
+   ): CallState {
+     if (!value) return INVALID_CALL_STATE;
+   
+     //检验返回的对象是否有空字符串或者undefined
+     const obj_data = Object.entries(value)
+       .map((item) => item[1])
+       .some((item) => (item ?? '') !== ''); 
+   
+     if (value) {
+       const data: CallState = {
+         loading: obj_data,
+         error: false,
+         value: ethers.BigNumber.isBigNumber(value) ? value.toString() : value,  //value转化成字符串
+       };
+       if (methodName) {
+         data[methodName] = data.value;
+       }
+       return data;
+     }
+   
+     return {
+       ...INVALID_CALL_STATE,
+       error: true,
+     };
+   }
+   
+   ```
+
+6. ## 封装代币信息 （余额、小数） ./useToken
+
+   ```ts
+   // TODO:   封装代币信息
+   export function useToken(tokenAddress?: string): CallState {
+     const TokenContract = useTokenContract(tokenAddress);
+     const { symbol } = useSingleCallResult(TokenContract, 'symbol');
+     const { decimals } = useSingleCallResult(TokenContract, 'decimals');
+     const { name } = useSingleCallResult(TokenContract, 'name');
+   
+     // const address = useSingleCallResult(TokenContract, 'address');
+   
+     return useMemo(() => {
+       const data = {
+         symbol,
+         decimals,
+         name,
+         address: tokenAddress,
+       };
+       return toCallState(data);
+     }, [symbol, decimals, name]);
+   }
+   
+   ```
+
+   
+
+7. ## 封装获取代币余额  ./useToken
+
+   ```ts
+   // currency balance  通过合约获取当前代币
+   export const useCurrencyBalances = (tokenAddress?: string): CallState => {
+     const { account } = Web3Provider.useContainer();
+   
+     const TokenContract = useTokenContract(tokenAddress ?? undefined);
+     const { decimals } = useSingleCallResult(TokenContract, 'decimals');
+     const { balanceOf } = useSingleCallResult(TokenContract, 'balanceOf', [
+       account,
+     ]);
+   
+     return useMemo(() => {
+       const data = {
+         balanceOf,
+         balances: balanceOf
+           ? BigNumber(balanceOf).div(Math.pow(10, decimals)).toFixed()
+           : '',
+       };
+   
+       return toCallState(data);
+     }, [decimals, balanceOf, tokenAddress]);
+   };
+   
+   // Mainnet balance  获取主网币 （fibo okx）
+   export const useMainNetBalances = (): CallState => {
+     const { account, provider } = Web3Provider.useContainer();
+     const [pending, setPending] = useState();
+   
+     useEffect(() => {
+       (async () => {
+         if (!provider || !account) return;
+         const pending = await provider.getBalance(account, 'pending');
+         if (pending) {
+           setPending(pending.toString());
+         }
+       })();
+     }, [provider, account]);
+   
+     return useMemo(() => {
+       const data = {
+         pending,
+         balances: pending
+           ? BigNumber(pending).div(Math.pow(10, 18)).toFixed()
+           : '',
+       };
+       return toCallState(data);
+     }, [pending]);
+   };
+   
+   
+   
+   ```
 
    
 
 
 
+## 整体调用流程
+
+我们要清楚一个最基本的流程，调用合约需要实例化合约，实例化合约需要合约地址+合约abi，同时也需要ethersjs实例化出provider。
+
+然后调用合约方法，需要向实例化的合约内传递参数
 
 
-# 前置的验证（）
+
+获取代币的值
+
+- 主网代币：通过ethers.getBalance
+
+- erc代币，需要erc代币合约+ercabi，和调用合约一样的方法拿到代币信息
+
+  ```ts
+  provider.getBalanceOf.[account]；
+  ```
+
+initial
+
+```ts
+const { account } = Web3Provider.useContainer();
+  const { Message } = useMessage();
+  const AWWContract = useAWWContract();
+
+  const [depositLoading, setDepositLoading] = useState(false); // loading
+  const { getCurSplit } = useSingleCallResult(AWWContract, 'getCurSplit', [
+    account,
+  ]); // 
+
+  const {
+    value: { address: usdtAddress, decimals },
+  } = useGetUSDT();
+  const tokenContract = useTokenContract(usdtAddress);
+  const { value: usdt_allowance } = useSingleCallResult(
+    tokenContract,
+    'allowance',
+    [account, contractAddress],
+  );
+
+  const getErcContract = useErcContract();
+```
+
+
+
+调起钱包的方法，将hash,loading,msg传如Message，直接使用实例化合约调用，而不是singleCallContract
+
+```typescript
+try {
+      const res = await Contract?.[name](...data);
+      Message(
+        res?.hash,
+        () => {
+          setDepositLoading(false);
+        },
+        msg,
+      );
+    } catch (error) {
+       ///...
+    }
+```
+
+
+
+
+
+## 查询代币
+
+#### 主网代币 
+
+直接调用useMainNetBalances
+
+```ts
+ //获取主网币
+  const {
+    value: { balances: fiboBalances },  //balances是因为合约调用方法methodName是balances
+  } = useMainNetBalances();   //结构出值 fiboBalances
+```
+
+#### 非主网代币（erc20）
+
+```ts
+useTokenContract(address)->实例化合约Contract->调用方法
+
+如果是只想看代币余额，那么直接useCurrencyBalances(address)
+```
 
 
 
@@ -707,9 +1029,84 @@ export default createContainer(useWeb3Hook);
 
 
 
+## 大数转化
+
+输入num，小数点，乘或者除以
+
+```ts
+export const digitalPrecision = (
+  num: string | number,
+  decimals: number,
+  isDiv?: boolean, //   By default  
+) => {
+  // division. High-precision decimal conversion to Arabic numerals
+  if (!num) {
+    return '';
+  }
+  if (isDiv) {
+    return BigNumberJs(num.toString())
+      .div(Math.pow(10, decimals))
+      .toFixed(config.precision)
+      .toString();
+  } else {
+    // Convert to high precision decimal by default
+    return BigNumberJs(num.toString()).times(Math.pow(10, decimals)).toFixed();
+  }
+};
+
+```
+
+
+
+## 将参数转化为对象
+
+```ts
+// Process object BigNumber data
+export const setObjBigNumber = (
+  data = {},
+  fn = (e: any) => {
+    return e;
+  },
+) => {
+  return Object.entries(data)
+    .map((item: any) => ({
+      [item[0]]: fn(item[1].toString()),
+    }))
+    .reduce(
+      (acc: any, cur: any) => ({
+        ...acc,
+        ...cur,
+      }),
+      {},
+    );
+};
+```
+
+
+
+## 省略地址
+
+```ts
+export function formatAddress(address: string) {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+export function formatHash(hash: string) {
+  if (hash.length <= 12) return hash;
+  return `${hash.slice(0, 8)}...${hash.slice(-4)}`;
+}
+
+```
+
+
+
+
+
+
+
 # 插件
 
-## 提示toast
+## 提示toast  轻提示
 
 https://react-hot-toast.com/docs
 
@@ -729,6 +1126,20 @@ npm install bignumber.js
 
 
 
+## antd
+
+```js
+$ npm install antd --save
+```
+
+### message notication
+
+
+
+
+
+
+
 # package信息
 
 注意ethers js是v5版本 v6有些方法会报错
@@ -737,3 +1148,14 @@ npm install bignumber.js
 
 ```
 
+
+
+
+
+# 补充知识点
+
+entires
+
+reduce
+
+无法直接修改item，写一个函数返回
