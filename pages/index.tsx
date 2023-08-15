@@ -1,15 +1,20 @@
 import * as React from 'react';
-import useWeb3Hook from '@/store/Web3Provider'
 import useStorage from '@/store/Web3Provider/storage'
 import Web3Provider from '@/store/Web3Provider';
 //config
 import config from '@/config'
+import { useTest } from '@/hooks/useTest';
 export interface IAppProps {
 }
 
 export default function App (props: IAppProps) {
   let {networkId,walletType} = useStorage.useContainer();
-  let {connect,account,disconnect,active}  = Web3Provider.useContainer();
+  let {connect,account,disconnect,active,provider}  = Web3Provider.useContainer();
+  const {} = useTest();
+  // console.log(provider.getBlock('100004'));
+  
+  // console.log("多签合约工厂地址:",value);
+  
   console.log(networkId,walletType);
   
   return (

@@ -3,6 +3,8 @@ import config from '@/config';
 // contractAddress
 export const contractAddress = config.Contract;
 
+export const logicContractAddress = '0x9aA63Ae89De07Ec32E8676bCAD7F656C64f1Ae52'
+
 export const maxUint256Value =
   '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
