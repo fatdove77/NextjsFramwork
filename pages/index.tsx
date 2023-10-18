@@ -9,6 +9,7 @@ export interface IAppProps {
 
 export default function App (props: IAppProps) {
   let {networkId,walletType} = useStorage.useContainer();
+
   let {connect,account,disconnect,active,provider}  = Web3Provider.useContainer();
   const {} = useTest();
   // console.log(provider.getBlock('100004'));

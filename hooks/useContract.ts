@@ -2,7 +2,6 @@ import Web3Provider from '@/store/Web3Provider';
 import { useMemo } from 'react';
 import { type Contract } from 'ethers';
 import { getContract } from './index';
-import MultiLogic_ABI from '@/constance/abi/MultiLogicAbi.json';
 import MultiFactory_ABI from '@/constance/abi/MultiFactoryAbi.json';
 import ERC20_ABI from '@/constance/abi/erc20.json';
 import { contractAddress } from '@/constance';

@@ -9,6 +9,7 @@ import { toCallState, type MethodArg } from './utils';
 import { formatHash, getEtherscanLink, isAddress } from './utils';
 import toast from 'react-hot-toast';
 import { message, notification } from 'antd';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 
 //create contract instance  
@@ -81,6 +82,7 @@ export const useMessage = () => {
 
   // message
   const Message = (
+    provider: JsonRpcProvider,
     hash: string,
     fn?: () => any,
     successText: string = '链上已确认',

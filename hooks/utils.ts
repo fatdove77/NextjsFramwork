@@ -8,9 +8,9 @@ import config from '@/config';
 export function isAddress(value: any, isAddress = true): string | false {
   try {
     if (isAddress) {
-      return ethers.utils.getAddress(value);
+      return ethers.getAddress(value);
     } else {
-      return ethers.utils.getContractAddress(value);
+      return value;  //v6?
     }
   } catch {
     return false;
@@ -134,7 +134,7 @@ export function toCallState(
     const data: CallState = {
       loading: obj_data,
       error: false,
-      value: ethers.BigNumber.isBigNumber(value) ? value.toString() : value,
+      value:  value.toString(),
     };
     if (methodName) {
       data[methodName] = data.value;

@@ -128,7 +128,7 @@ const useWeb3Hook = (): useWeb3Type => {
             }
           }
         }
-        const provider = new ethers.providers.Web3Provider(providerInstance); // 实例化provider
+        const provider = new ethers.BrowserProvider(providerInstance); // 实例化provider
         const user_Account = await provider._getAddress(account); // 
 
         // Set
