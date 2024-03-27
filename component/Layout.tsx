@@ -23,7 +23,7 @@ function compose(containers: any) {
   };
 }
 
-const ComposedStore = compose(Object.values(models));
+// const ComposedStore = compose(Object.values(models));
 
 
 function Layout({ children }: any) {
@@ -33,14 +33,17 @@ function Layout({ children }: any) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <div className="relative h-screen">
+      <div className="h-screen">
         <Header />
-        <div id="content" className="w-full relative top-0 left-0">
-          <ComposedStore>
+        <div id="content" className="w-full">
+          {/* <ComposedStore> */}
             {children}
-          </ComposedStore>
+          {/* </ComposedStore> */}
+          
+          
           <Footer />
         </div>
+        
       </div>
 
     </>

@@ -1,150 +1,113 @@
-
-/* index.css */
 @tailwind base;
-/* @tailwind components; */
+@tailwind components;
 @tailwind utilities;
 
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-.Container{
-  background-color:'pink';
+/* @font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('../assets/font/CabinetGrotesk-Extrabold.otf');
+  font-weight: 800;
+  font-style: normal;
 }
 
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('../assets/font/CabinetGrotesk-Bold.otf');
+  font-weight: bold;
+  font-style: normal;
+}
 
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-  box-sizing: border-box;
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('../assets/font/CabinetGrotesk-Medium.otf');
+  font-weight: 500;
+  font-style: normal;
 }
-/* HTML5 display-role reset for older browsers */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
+
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('../assets/font/CabinetGrotesk-Regular.otf');
+  font-weight: 400;
+  font-style: normal;
 }
-body {
-  line-height: 1;
+  */
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
 }
-ol,
-ul {
-  list-style: none;
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
 }
-blockquote,
-q {
-  quotes: none;
+ 
+/* html { */
+  /* font-size:14 */
+  /* padding:0rem;
+  margin: 0rem;
+  font-weight: normal;
+  line-height: 24px;
+  letter-spacing: 0px;
+  font-weight: 500;
+  color: #000000;
+  font-family: Source Han Sans CN;
+  letter-spacing: -0.3px;
+} */
+ 
+body{
+  background: rgba(242, 247, 235, 0.78);
+  padding:0rem;
+  margin: 0rem;
+  font-weight: normal;
+  line-height: 24px;
+  letter-spacing: 0px;
+  font-weight: 500;
+  color: #000000;
+  font-family: Source Han Sans CN;
+  letter-spacing: -0.3px;
+  font-size: 1rem;
+
 }
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-  content: '';
-  content: none;
+
+.container1{
+  background: rgba(242, 247, 235, 0.78);
+  padding:0rem;
+  margin: 0rem;
+  font-weight: normal;
+  line-height: 24px;
+  letter-spacing: 0px;
+  font-weight: 500;
+  color: #000000;
+  font-family: Source Han Sans CN;
+  letter-spacing: -0.3px;
+
 }
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
+
+
+
+
+@media (min-width: 1920px) {
+  html {
+    font-size:18px
+  }
+} 
+
+@media (max-width: 1440px) {
+  html {
+    font-size:14px
+  }
+} 
+
+@media (max-width: 640px) {
+  html {
+    font-size: 16px;
+  }
 }
-html,
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-}
+
+/* .css-uio422-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root.Mui-focused .MuiOutlinedInput-notchedOutline{
+  border:2px solid  #4D9623;
+} */
